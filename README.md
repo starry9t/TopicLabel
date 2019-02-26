@@ -1,4 +1,4 @@
-# TopicLabel
+# TopicLabeling
 A python script to generate topic label from documents.
 
 ## Requirements
