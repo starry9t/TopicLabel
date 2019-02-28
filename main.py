@@ -1,49 +1,36 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 25 13:11:33 2019
+Created on Mon Feb 25 14:02:02 2019
 
 @author: Yu Zhou
 """
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jan 31 12:02:41 2019
-
-@author: Yu Zhou
-"""
-
-
 # In[1]:
 import os,sys
 cur_dir = os.getcwd()
-sys.path.append('SIF/')
+sys.path.append('rsc/')
 import data_io, params, SIF_embedding
 import pickle
-import csv, time, re
+import time
 import nltk
-#nltk.download('wordnet')
+nltk.download('wordnet')
 from nltk import sent_tokenize
 from nltk.tokenize import word_tokenize as wt
-#nltk.download('stopwords')
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 stop_words = stopwords.words('english')
-stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
+stop_words.extend(['from', 're', 'n\'t','ca','wo','dr'])
 import enchant
 endict = enchant.Dict("en_UK")
 import numpy as np
-import pandas as pd
 import spacy
 import heapq
 import operator
 from collections import defaultdict
 import gensim 
 import gensim.corpora as corpora
-from gensim.utils import simple_preprocess
 from gensim.models import CoherenceModel
 from fastText import train_unsupervised
-from fastText import load_model
 # Here we add Gensim libraries 
 import warnings
 warnings.filterwarnings("ignore",category=DeprecationWarning)
@@ -52,14 +39,12 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.ERROR)
 ###Onlyl First Time   ####  python3 -m spacy download en    #### https://spacy.io/api/annotation
 nlp = spacy.load('en', disable=['parser', 'ner']) #Initialize spacy 'en' model, keeping only tagger component (for efficiency)
-#Prepare Stopwords: Download and import them and make it available in stop_words.
 
 
 # In[2]: SET ALL VARIABLES ACCORDING TO YOUR REQUIREMENT
 
 # Download File: http://mallet.cs.umass.edu/dist/mallet-2.0.8.zip
 # Update this path to where you saved mallet
-#mallet_path = '/home/user/anaconda3/mallet-2.0.8/bin/mallet' # this path is runned on local machine
 mallet_path = '/home/zhouyu/anaconda3/mallet-2.0.8/bin/mallet' # this path is runned on server
 
 # number of topics, estimate this number in [startN,  limitN)
@@ -67,9 +52,8 @@ startN = 20
 limitN = 78
 stepN = 5
 SMOOTH = 0.1 # # to avoid the consequence of vector norm equals to 0
-D = 50 # dimentional number of vector
-EXP = 'B'  # in ['A', 'B', 'c'] see line 133
-modeltag = 'expA'  # tag it for different original files or Lda models
+D = 100 # dimention of word vector
+modeltag = 'default'  # tag it for different original files or Lda models
 
 # In[3]: SET ALL INTERMEDIATE FOLDER AND FILENAMES
 #### you don't have to edit this part.
@@ -94,16 +78,16 @@ else:
 data_dir = os.path.join(cur_dir,'data')
 #-- filenames
 original_file = os.path.join(data_dir,'clinical.txt')
+
+corpusWeight_file = os.path.join(inter_dir, 'clinic_vocab_min3.txt')
+embedding_txt_file = os.path.join(inter_dir, 'embedding.txt')
+
+
 coherence_file = os.path.join(model_dir,'CV_Coherence_list.txt')
 
-#glove300_txt_file = os.path.join(data_dir, 'glove.840B.300d.txt')
-#gloveWeight_file = os.path.join(data_dir, 'enwiki_vocab_min200.txt')
 word2weight_pickle_file = os.path.join(data_dir,'word2weight.pickle')
 
-embedding_txt_file = os.path.join(inter_dir, 'embedding.txt')
-processed_pickle_file = os.path.join(inter_dir, 'processed.pickle')
 processed_txt_file = os.path.join(inter_dir, 'processed.txt')
-id2word_file = os.path.join(inter_dir,'id2word.pickle')
 tdmatrix_file = os.path.join(inter_dir,"topic_doc_matrix.npy")
 twmatrix_file = os.path.join(inter_dir,"topic_word_matrix.npy")
 docN = 20
@@ -111,22 +95,13 @@ topNdoc_file = os.path.join(inter_dir, 'top{}_doc_idx.txt'.format(docN))
 wordN = 10
 topNwordprob_file = os.path.join(inter_dir, 'top{}_word_prob.pickle'.format(wordN))
 ftmodel_file = os.path.join(inter_dir,'ftmodel.bin') # fastText model
-label_file_word = os.path.join(outputDir,'topicLabels_Words.txt')
 
-#phrase_list_file = os.path.join(inter_dir, 'phrasesList.pickle')
 phrase_dict_file = os.path.join(inter_dir, 'phrasesDict.pickle')
-#phrase_txt_file = os.path.join(inter_dir, 'phrases.txt')
-new_txt_file = os.path.join(inter_dir, 'new.txt')
-#data_word_clean_txt_file = os.path.join(inter_dir, 'dwctxt.txt')
-#glove300_dict_file = os.path.join(inter_dir, 'gloveDict.pickle')
-#We_npy_file = os.path.join(inter_dir, 'We.npy')
-#words_pickle_file =os.path.join(inter_dir, 'words.npy')
-corpusWeight_file = os.path.join(inter_dir, 'clinic_vocab_min3.txt')
+new_txt_file = os.path.join(inter_dir, 'new.txt') # just to see
 
 # In[4]:
 
 ### This part contains all the functions that we need. 
-
 def lemmatization(texts, allowed_postags=['NOUN', 'ADJ', 'VERB', 'ADV']):
     texts_out = []
     for sent in texts:
@@ -172,7 +147,7 @@ def writeNewTxt(new_data, new_file):
                 etf.write('{} '.format(word))
             etf.write('\n')
     etf.close()
-    print('processed txt written.')    
+    print('new txt file written.')    
     return
 
 def preprocessTxt(txtfile, newfile):
@@ -205,12 +180,14 @@ def preprocessTxt(txtfile, newfile):
     
     return renew_data, pro_data
 
-def buildPhrases(processed_data):
+def buildPhrases(processed_data,phrase_dict_file):
     phraseDict = defaultdict(int)
     for doc in processed_data:
         for item in doc:         
             if '_' in item:
-                phraseDict[item] += 1
+                t = item.split('_')[0]
+                if t.isalpha():
+                    phraseDict[item] += 1
     with open(phrase_dict_file, 'wb') as phdf:
         pickle.dump(phraseDict, phdf)
     phdf.close()
@@ -227,11 +204,6 @@ def buildCorpusFreq(txtfile, corpusWeight_file):
         line = wt(line, language='english')
         for word in line:
             wordDict[word] += 1
-        #sents = sent_tokenize(line, language='english')
-#        for sent in sents:
-#            for word in sent:
-#                wordDict[word] += 1
-    # order dict to list
     wordFreq = sorted(wordDict.items(), key=operator.itemgetter(1), reverse=True)
     
     with open(corpusWeight_file, 'w') as writer:
@@ -244,23 +216,18 @@ def buildCorpusFreq(txtfile, corpusWeight_file):
 
 def buildW2VDict(method='FastText'):
     w2vdict = {} # the value should be (D, ) ndarray
-    
-    # there should be a pretrained load way  
     if method == 'FastText': #https://fasttext.cc/docs/en/english-vectors.html  download wordvectors
-        if os.path.isdir(ftmodel_file):
-            w2vmodel = load_model(ftmodel_file)
-        else:
-            w2vmodel = train_unsupervised(embedding_txt_file, model='skipgram', lr=0.05, dim=D, ws=2, epoch=5, minCount=2, 
-                                          minCountLabel=0, minn=3, maxn=6, neg=5, wordNgrams=3, loss='ns', bucket=2000000, 
-                                          thread=5, lrUpdateRate=100, t=0.0001, label='__label__', verbose=2, pretrainedVectors='')
-            w2vmodel.save_model(ftmodel_file)
+        w2vmodel = train_unsupervised(embedding_txt_file, model='skipgram', lr=0.05, dim=D, ws=2, epoch=5, minCount=2, 
+                                      minCountLabel=0, minn=3, maxn=6, neg=5, wordNgrams=3, loss='ns', bucket=2000000, 
+                                      thread=5, lrUpdateRate=100, t=0.0001, label='__label__', verbose=2, pretrainedVectors='')
+        #w2vmodel.save_model(ftmodel_file)
         print('fastText word vector model trained as ftmodel.bin')
         # Turn it into dict
         (word,freq) = w2vmodel.get_words(include_freq=True)
         for w, f in zip(word, freq):
             w2vdict[w] = w2vmodel.get_word_vector(w)
     print('w2vdict built.')
-    return w2vdict
+    return w2vdict, w2vmodel
 
 def fromTxt2Docs(txtfile):   #
     '''
@@ -271,22 +238,15 @@ def fromTxt2Docs(txtfile):   #
         4 write a processed txt file to count word frequency
         5 write the word frequency txt as the input of SIF
     '''
-    if os.path.isfile(processed_pickle_file):
-        with open(processed_pickle_file, 'rb') as f:
-            processed_data = pickle.load(f)
-        f.close()
-        print('processed_data loaded.')
-        return processed_data
-
     # Preprocess txt
     new_data, pro_data = preprocessTxt(txtfile, new_txt_file)
     
     pro_data = remove_nonwords(pro_data)
-    pro_data = remove_stopwords(pro_data)  # Remove Stop Words
+    pro_data = remove_stopwords(pro_data)  
     print("data words preparing...")
-    bigram = gensim.models.Phrases(pro_data, min_count=30, threshold=0.1, delimiter=b'_')# higher threshold fewer phrases.
+    bigram = gensim.models.Phrases(pro_data, min_count=50, threshold=0.1, delimiter=b'_')# higher threshold fewer phrases.
     print("get bigram")
-    trigram = gensim.models.Phrases(bigram[pro_data], min_count=30, threshold=0.1, delimiter=b'_')#, threshold=100)  
+    trigram = gensim.models.Phrases(bigram[pro_data], min_count=30, threshold=0.1, delimiter=b'_')  
     print("get trigram")    
     
     # Faster way to get a sentence clubbed as a trigram/bigram
@@ -297,51 +257,35 @@ def fromTxt2Docs(txtfile):   #
 
     data_words_trigrams = [trigram_mod[bigram_mod[doc]] for doc in new_data]  # Form Trigrams
     
-    # Write a new txt file which contains phrases 
+    # Write a new txt file which contains phrases (will be used to train sentence vector)
     writeNewTxt(data_words_trigrams, embedding_txt_file)  # build w2v dict
     
     # write word/phrase frequency
     buildCorpusFreq(embedding_txt_file, corpusWeight_file)
 
     # build phrase list and dict, write dict txt.
-    buildPhrases(data_words_trigrams)
+    buildPhrases(data_words_trigrams, phrase_dict_file)
     
     processed_data = remove_stopwords(data_words_trigrams)  
+    print("stopwords removed")
     processed_data = remove_pun(processed_data)
+    print("punctuations removed")
     processed_data = lemmatization(processed_data)
-    
-    with open(processed_pickle_file, 'wb') as writer:
-        pickle.dump(processed_data, writer)
-    writer.close()    
-    print("----data processed----")
-    print('processed data[0]:\n{}'.format(processed_data[0]))
-    
-    writeNewTxt(processed_data, 'test.txt')
 
     return processed_data
     
 def FormInput4Mallet(processed_data):
-    
-    if os.path.isfile(id2word_file):
-        with open(id2word_file,'rb') as i2w:
-            id2word = pickle.load(i2w)
-        print('id2word file is loaded.')  
-        i2w.close()    
-        corpus = [id2word.doc2bow(text) for text in processed_data]
-        return id2word, corpus
-    
-    #---  
     print('Start forming input files for LdaMallet model...')
     id2word = corpora.Dictionary(processed_data)
-    with open(id2word_file,'wb') as i2w:
-        pickle.dump(id2word,i2w)
-    print("get id2word and save it to \'id2word\' file. id2word dictionary has {} words.".format(len(id2word)))
-    i2w.close()
-    
     # Term Document Frequency
     corpus = [id2word.doc2bow(text) for text in processed_data]
-    print("get corpus")
-    
+    print("Get id2word and corpus.")
+    with open('id2word.pickle','wb') as i2w:
+        pickle.dump(id2word, i2w)
+    i2w.close()
+    with open('corpus.pickle','wb') as cp:
+        pickle.dump(corpus, cp)
+    cp.close()
     return id2word, corpus
 
 def runMalletModels(dictionary, corpus, texts, limit=20, start=2, step=3):
@@ -375,13 +319,13 @@ def runMalletModels(dictionary, corpus, texts, limit=20, start=2, step=3):
         coherence_values.append(coherence_ldamallet)
         print("LDA training time = %s min" % ((time.time() - start_time)/60))
         print('Coherence Score: ', coherence_ldamallet)
-    print("there are {0} models learned.".format(len(model_list)))
+    print("There are {0} models learned.".format(len(model_list)))
 
     for i,model in enumerate(model_list):
         fn = modeltag + str(i) + ".mallet"
         filename =  os.path.join(model_dir, fn)
         model.save(filename)
-    print("models saved.")
+    print("Models saved.")
     
     with open(coherence_file,"wt") as f:
         for C in coherence_values:
@@ -394,26 +338,20 @@ def runMalletModels(dictionary, corpus, texts, limit=20, start=2, step=3):
 
 def generateInterFiles(optimal_model,corpus):
     num_topics = optimal_model.num_topics # Number of topics in optimal model
-    #
     print("Starting constructing the Document-Topic probability matrix...")
-    topic_doc_matrix = np.zeros((num_topics, len(corpus))) 
-    ######
     
-    
+    topic_doc_matrix = np.zeros((num_topics, len(corpus)))        
     for i, row in enumerate(optimal_model[corpus]):
-        ##################
-
-        ###################
         row = sorted(row, key=lambda x: (x[0]))
         for topic,prop in row:
             topic_doc_matrix[topic][i] = prop   
     np.save(tdmatrix_file, topic_doc_matrix, allow_pickle=False) 
-    print("a {} Document-Topic probability matrix is constructed and saved.".format(np.shape(topic_doc_matrix)))
+    print("A {} Document-Topic probability matrix is constructed and saved.".format(np.shape(topic_doc_matrix)))
     #
     print("Start constructing the Word-Topic probability matrix...")
     topic_word_matrix = optimal_model.get_topics()
     np.save(twmatrix_file, topic_word_matrix, allow_pickle=False)
-    print("a {} Word-Topic matrix is constructed and saved.".format(np.shape(topic_word_matrix)))
+    print("A {} Word-Topic matrix is constructed and saved.".format(np.shape(topic_word_matrix)))
     #
     # Save the Id of the top 10 relevant document for each topic 
     topN_doc = []
@@ -448,15 +386,15 @@ def generateInterFiles(optimal_model,corpus):
     with open(topNwordprob_file,'wb') as ts:
         pickle.dump(topN_word_prob,ts)
     ts.close()
-    
-    # 
+
+    label_file_word = os.path.join(outputDir,'topicLabeling_Words.txt') #---Output 1
     with open(label_file_word, 'w') as tnw:
         for i in range(num_topics):
             tnw.write('Topic {}:\n'.format(i))
             for word in topN_word[i]:
                 tnw.write('{}\t'.format(word))
             tnw.write('\n------\n')
-        print('Topic labeling with words is written in {}.'.format(label_file_word))
+        print('Topic labeling with words is written.')
     tnw.close()
 
     #this part can be used for manual check. you can comment it.        
@@ -545,7 +483,7 @@ def sentDiscriminativeScore(sentence, topicid, twdsdict):
         sentence_score += twdsdict[(topicid,word)]
     return sentence_score/len(sentence)
 
-def generateLabelFile(txtfile, Nsent=5, strategy = 'DiscriminativeScore', twdsdict={}):
+def generateLabelFile(embeddingFile, Nsent=5, strategy = 'DiscriminativeScore', twdsdict={}):
     '''
     -----strategy: Similarity
     assume one document is focus on only 1 topic.
@@ -556,10 +494,10 @@ def generateLabelFile(txtfile, Nsent=5, strategy = 'DiscriminativeScore', twdsdi
     '''
     label_file_sent = os.path.join(outputDir,'topicLabels_Sentences_{}.txt'.format(strategy))
     
-    with open(txtfile,'r',encoding='utf-8') as ad:
+    with open(embeddingFile,'r',encoding='utf-8') as ad:
         alldocs = ad.read().splitlines()
-    print('txt file is loaded in list.')
     ad.close()
+    print('txt file is loaded in list.')
     tsDict = {}
     topicdocs = np.genfromtxt(topNdoc_file)
     N = len(topicdocs)
@@ -593,8 +531,8 @@ def generateLabelFile(txtfile, Nsent=5, strategy = 'DiscriminativeScore', twdsdi
             for docid in docidlist:
                 docid = int(docid)
                 doc = alldocs[docid]  #get text
-                sents = sent_tokenize(doc, language='english')
-                for sent in sents:
+                sents = sent_tokenize(doc, language='english')                
+                for (i,sent) in enumerate(sents):
                     sv = getSentenceVector(sent)
                     similarity = similarityTopicSentence(tv,sv)
                     labelList.append((similarity,sent))
@@ -611,16 +549,15 @@ def generateLabelFile(txtfile, Nsent=5, strategy = 'DiscriminativeScore', twdsdi
             for docid in docidlist:
                 docid = int(docid)
                 doc = alldocs[docid]
-                sents = sent_tokenize(doc, language='english')
-                c = min(len(sents),Nsent)
-                for sent in sents:
+                sents = sent_tokenize(doc, language='english')              
+                for (i,sent) in enumerate(sents):
                     dscore = sentDiscriminativeScore(sent, topicid, twdsdict)
                     labelList.append((dscore,sent))
+                c = min(len(labelList),Nsent)
                 labelList = heapq.nlargest(c,labelList, key=lambda s:s[0])
             labelList = heapq.nlargest(Nsent,labelList, key=lambda s:s[0])
             tsDict[topicid] = labelList
 
-            
     ###
     with open(label_file_sent, 'w') as tl: 
         for i in range(len(tsDict)):  
@@ -712,7 +649,8 @@ def GeneratePhraseLabel(w2vmodel, topicNum):
         phraseLabelDict[i] = top10phrases
     
     ###
-    with open('phraseLabel.txt', 'w') as tl: 
+    phrase_label_file = os.path.join(outputDir, 'topicLabeling_phrase.txt') # Output 2
+    with open(phrase_label_file, 'w') as tl: 
         for i in range(len(phraseLabelDict)):
             tl.write('topic {}:\n'.format(i))
             for j in range(len(phraseLabelDict[i])):
@@ -727,32 +665,28 @@ def GeneratePhraseLabel(w2vmodel, topicNum):
 
 if __name__ == '__main__':
 
-
-    # you can run this step by step or all in once.
     processed_data = fromTxt2Docs(original_file)
     print('Now we got processed data.')
     (id2word, corpus) = FormInput4Mallet(processed_data) 
     (model_list, coherence_values) = runMalletModels(dictionary=id2word, corpus=corpus, texts=processed_data, start=startN, limit=limitN, step=stepN)
-    optimal_model = model_list[coherence_values.index(max(coherence_values))]  
-    topicNum = generateInterFiles(optimal_model,corpus)  # This will also generate one of the output file --> topicLabels_Words.txt
+    optimal_model = model_list[coherence_values.index(max(coherence_values))] 
+    
+    topicNum = generateInterFiles(optimal_model,corpus) #output 1
     print('Now we get all intermediate files.')
 #    
-    Di = buildW2VDict('FastText') 
-    w2vmodel = load_model(ftmodel_file)
-    GeneratePhraseLabel(w2vmodel, 20)
+    Di, w2vmodel = buildW2VDict('FastText') 
+    GeneratePhraseLabel(w2vmodel, 20)  #output 2
     
-    generateLabelFile(txtfile=embedding_txt_file, Nsent=5, strategy = 'Similarity')
+    generateLabelFile(embeddingFile=embedding_txt_file, Nsent=5, strategy = 'Similarity')
     
     twmatrix = np.load(twmatrix_file)
     twdsdict = buildTWDScoreDict(twmatrix,id2word)
-    generateLabelFile(txtfile=embedding_txt_file, Nsent=5, strategy = 'DiscriminativeScore', twdsdict=twdsdict)
-
+    generateLabelFile(embeddingFile=embedding_txt_file, Nsent=5, strategy = 'DiscriminativeScore', twdsdict=twdsdict)
 
     DocVectorD, DocSentVectorD, We = SIFDocEmbedding(Di, corpusWeight_file, embedding_txt_file)
-    generateLabelFile(txtfile=embedding_txt_file, Nsent=5, strategy = 'SIFSimilarity', twdsdict=twdsdict)
-    
-    GeneratePhraseLabel(w2vmodel, 20)
-    
+    generateLabelFile(embeddingFile=embedding_txt_file, Nsent=5, strategy = 'SIFSimilarity', twdsdict=twdsdict)
+
+    print('optimal model number is {}'.format(coherence_values.index(max(coherence_values))))
     print('There you go!')
 
     

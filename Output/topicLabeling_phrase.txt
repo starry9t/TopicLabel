@@ -1,0 +1,60 @@
+topic 0:
+relieve_pain	pain_left	pain_gone	hip_pain	neck_pain	back_pain	lower_back_pain	lot_pain	pain_went	shoulder_pain	
+------
+topic 1:
+even_know	even_bother	let_know	-____-	__	even_get	______	_____	______________________________________________________________	____	
+------
+topic 2:
+health_care_provider	patient_care	care_also	care_well	care_provider	//www.vitals.com/doctors/dr_megan_blackburn/profile	patients_time	medical_practice	patients_would	staff_doctors	
+------
+topic 3:
+seeing_doctor	love_doctor	seen_doctor	going_doctor	told_doctor	see_doctor	visit_doctor	said_doctor	like_doctor	real_doctor	
+------
+topic 4:
+bill_insurance	insurance_pay	insurance_paid	co_pay	insurance_coverage	insurance_cover	told_insurance	insurance_told	insurance_company	called_insurance	
+------
+topic 5:
+need_physical_therapy	therapy_needs	physical_therapy	therapy_place	therapy_sessions	rehab_plus	physical_therapist	knee_injury	physical_therapists	massage_therapy	
+------
+topic 6:
+time_call	call_back	got_call	calls_back	appointment_day	cancel_appointment	late_appointment	time_appointment	schedule_appointment	make_appointment	
+------
+topic 7:
+-_-	able_make	-____-	get_new	make_money	feel_good	______________________________________________________________	get_good	______	_____	
+------
+topic 8:
+______	_____	____	______________________________________________________________	-____-	//www.vitals.com/doctors/dr_megan_blackburn/profile	___	last_night	old_daughter	-_-	
+------
+topic 9:
+time_went	time_left	time_go	time_told	-_-	time_spent	time_going	time_got	time_even	time_never	
+------
+topic 10:
+wait_hour	waited_hours	hour_wait	minutes_appointment	minute_wait	hour_past	minutes_waiting	half_hour	room_wait	appointment_time	
+------
+topic 11:
+utm_source=ishare	-_-	overall_health	healing_process	care_also	hard_work	overall_great	_real	rehab_plus	quality_life	
+------
+topic 12:
+yoga_studio	hot_yoga	___	personal_training	first_class	love_love	-_-	__	____	_____	
+------
+topic 13:
+drug_test	doctor_said	tests_done	doctor_also	//www.vitals.com/doctors/dr_megan_blackburn/profile	doctor_get	utm_medium=copy_link	-____-	birth_control	______________________________________________________________	
+------
+topic 14:
+utm_campaign=www_review_share_popup	reading_reviews	give_one	read_reviews	star_review	reviews_yelp	negative_reviews	yelp_review	good_reviews	bad_reviews	
+------
+topic 15:
+staff_friendly	staff_helpful	nice_friendly	staff_pleasant	nice_clean	friendly_always	friendly_accommodating	friendly_staff	staff_great	staff_also	
+------
+topic 16:
+foot_massage	good_massage	get_massage	massage_ever	hour_massage	tissue_massage	deep_tissue_massage	great_massage	massage_therapy	minute_massage	
+------
+topic 17:
+back_room	___	____	_____	______	time_came	______________________________________________________________	walk_ins	-____-	turned_away	
+------
+topic 18:
+place_horrible	place_ever	horrible_service	//www.vitals.com/doctors/dr_megan_blackburn/profile	care_people	____	-____-	place_go	_____	______	
+------
+topic 19:
+staff_awesome	great_friendly	wonderful_staff	staff_great	really_friendly	amazing_staff	friendly_knowledgeable	super_friendly	knowledgeable_friendly	staff_excellent	
+------

@@ -1,0 +1,60 @@
+Topic 0:
+pain	back	treatment	chiropractor	neck	adjustment	chiropractic	feel	shoulder	muscle	
+------
+Topic 1:
+n't	ca	give	put	wo	ray	thing	talk	hand	point	
+------
+Topic 2:
+patient	doctor	care	practice	medical	treat	health	staff	physician	provider	
+------
+Topic 3:
+dr	office	year	find	listen	doctor	refer	patient	concern	office_staff	
+------
+Topic 4:
+insurance	pay	bill	charge	money	receive	send	visit	cover	service	
+------
+Topic 5:
+physical_therapy	work	therapy	injury	surgery	exercise	therapist	week	knee	pt	
+------
+Topic 6:
+call	appointment	office	day	schedule	week	phone	leave	back	follow	
+------
+Topic 7:
+good	make	work	feel	day	find	guy	thing	lot	start	
+------
+Topic 8:
+nurse	facility	hospital	son	care	daughter	day	kid	home	child	
+------
+Topic 9:
+time	issue	visit	clinic	problem	year	recommend	run	find	work	
+------
+Topic 10:
+wait	time	hour	minute	doctor	appointment	long	min	waiting_room	appt	
+------
+Topic 11:
+treatment	good	team	body	experience	life	provide	treat	work	health	
+------
+Topic 12:
+class	gym	love	great	man	die	studio	workout	weight	machine	
+------
+Topic 13:
+doctor	prescription	test	result	give	n't	medication	send	med	lab	
+------
+Topic 14:
+review	give	experience	make	time	find	read	business	understand	write	
+------
+Topic 15:
+staff	nice	make	friendly	location	question	easy	service	helpful	clean	
+------
+Topic 16:
+massage	place	area	offer	price	feel	service	clean	session	book	
+------
+Topic 17:
+walk	leave	fill	lady	talk	paperwork	back	check	room	front	
+------
+Topic 18:
+place	bad	people	n't	rude	star	horrible	leave	person	unprofessional	
+------
+Topic 19:
+staff	great	amazing	love	friendly	highly_recommend	knowledgeable	awesome	wonderful	professional	
+------
