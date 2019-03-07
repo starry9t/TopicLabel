@@ -1,5 +1,5 @@
 # TopicLabeling
-A python script to generate topic label from documents.
+A python3 script to generate topic label from documents.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ The core LDA model is based on mallet. So you need to download Ladmallet model(h
 
 We also use Facebook's fastText to train word vector, so you also need to git clone repositionary from https://github.com/facebookresearch/fastText/tree/master/python so that you can successfully import fastText.
 
-Modules such as nltk, numpy, pickle, spacy, gensim are necessary, you can simply install them by using 'pip install xxx' in command line.
+Modules such as nltk, numpy, pickle, spacy, gensim, pyenchant are necessary, you can simply install them by using 'pip install xxx' in command line.
 
 
 ## Get started
@@ -27,7 +27,7 @@ Or, you can set your own parameters in main.py line 50-65.
 
 * data/ stores the input txt file. 
 
-* SIF/ stores SIF(https://openreview.net/pdf?id=SyK00v5xx) dependency scripts
+* rsc/ stores dependency scripts
 
 * main.py is the main script to generate topic labels(word/phrases/sentences) file. 
 
