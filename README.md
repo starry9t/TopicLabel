@@ -3,7 +3,7 @@ A python3 script to generate topic label from documents.
 
 ## Requirements
 
-This code is written in python and needs to run on Linux. 
+This code is written in python3 and needs to run on Linux. 
 
 Anaconda is highly recommended for editing your own code.
 
@@ -22,7 +22,7 @@ We've already put an example input file(data/example.txt) in directionary. So yo
 
 Or, you can set your own parameters in main.py line 50-65.
 
-After running successfully you will get result file as
+After running successfully you will get result file with content as below
 "Topic Labeling word"
 ![image](https://github.com/starry9t/TopicLabel/blob/master/image/word.png)
 "Topic Labeling phrase"
