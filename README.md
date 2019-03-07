@@ -1,12 +1,16 @@
 # TopicLabeling
 A python3 script to generate topic label from documents.
+(I'll add link to report here later)
 
-## Requirements
+## Installation
 
-This code is written in python3 and needs to run on Linux. 
+This code is written in python3 and have been tested with Ubuntu 14.0 x64, Anaconda Python 3.7 
 
-Anaconda is highly recommended for editing your own code.
-
+### Install Anaconda3
+First download Anaconda3 installer from [here](https://www.anaconda.com/distribution/#linux) and run the following command in terminal:
+```
+bash Anaconda3-2018.12-Linux-x86_64.sh
+```
 The core LDA model is based on mallet. So you need to download Ladmallet model(http://mallet.cs.umass.edu/dist/mallet-2.0.8.zip) and set the path you saved mallet in main.py(line 55).
 
 We also use Facebook's fastText to train word vector, so you also need to git clone repositionary from https://github.com/facebookresearch/fastText/tree/master/python so that you can successfully import fastText.
