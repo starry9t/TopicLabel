@@ -20,9 +20,11 @@ Modules such as nltk, numpy, pickle, spacy, gensim, pyenchant are necessary, you
 
 ## Execution
 
-1 Clone this repository to your machine.
+If you have installed all dependencies successfully, it is very simple to rerun this project. Just clone this repository to your machine and run the main.py, then you will see result file in folder Output/.
 ```
-$ git clone 
+$ git clone https://github.com/starry9t/TopicLabel.git
+$ cd TopicLabel/
+$ python main.py
 ```
 
 We've already put an example input file(data/example.txt) in directionary. So you can simply run main.py and see what the output is.
