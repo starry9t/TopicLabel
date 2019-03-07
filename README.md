@@ -27,7 +27,7 @@ Or, you can set your own parameters in main.py line 50-65.
 
 * data/ stores the input txt file. 
 
-* SIF/ stores SIF(https://openreview.net/pdf?id=SyK00v5xx) dependency scripts
+* rsc/ stores dependency scripts
 
 * main.py is the main script to generate topic labels(word/phrases/sentences) file. 
 
