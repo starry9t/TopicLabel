@@ -18,9 +18,12 @@ We also use Facebook's fastText to train word vector, so you also need to git cl
 Modules such as nltk, numpy, pickle, spacy, gensim, pyenchant are necessary, you can simply install them by using 'pip install xxx' in command line.
 
 
-## Get started
+## Execution
 
-To get started, please first make sure you have successfully installed all the modules that needed.
+1 Clone this repository to your machine.
+```
+$ git clone 
+```
 
 We've already put an example input file(data/example.txt) in directionary. So you can simply run main.py and see what the output is.
 
@@ -33,6 +36,10 @@ After running successfully you will get result file with content as below
 ![image](https://github.com/starry9t/TopicLabel/blob/master/image/sentence.png)
 "Topic Labeling sentence"
 ![image](https://github.com/starry9t/TopicLabel/blob/master/image/phrase.png)
+
+## Visualization
+
+(
 
 ## File description
 
