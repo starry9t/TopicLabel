@@ -11,15 +11,7 @@ First download Anaconda3 installer from [here](https://www.anaconda.com/distribu
 ```
 bash Anaconda3-2018.12-Linux-x86_64.sh
 ```
-#### Install Mallet
-```
-$ cd mymodule
-$ tar -xzf mallet-2.0.8.tar.gz
-```
- *** Remark this mallet full path (.../mallet-2.0.8/bin) because you'll need to update it in main.py(line 55)
-```
-$ export PATH=$PATH:  ~/mallet-2.0.8/bin
-```
+
 #### Install fastText
 Git clone fastText repository from [here](https://github.com/facebookresearch/fastText/tree/master/python) then follow the 
 ```
@@ -46,9 +38,12 @@ If you have installed all dependencies successfully, it is very simple to rerun 
 $ git clone https://github.com/starry9t/TopicLabel.git
 $ cd TopicLabel/
 ```
-Update lines in main.py
-line 55: update the mallet path
-
+#### Install Mallet
+```
+$ cd mymodule
+$ tar -xzf mallet-2.0.8.tar.gz
+```
+Update this mallet full path (.../mallet-2.0.8/bin) in line 55 in main.py and then
 ```
 $ python main.py
 ```
