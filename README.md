@@ -22,6 +22,13 @@ We've already put an example input file(data/example.txt) in directionary. So yo
 
 Or, you can set your own parameters in main.py line 50-65.
 
+After running successfully you will get result file as
+"Topic Labeling word"
+![image](https://github.com/starry9t/TopicLabel/blob/master/image/word.png)
+"Topic Labeling phrase"
+![image](https://github.com/starry9t/TopicLabel/blob/master/image/sentence.png)
+"Topic Labeling sentence"
+![image](https://github.com/starry9t/TopicLabel/blob/master/image/phrase.png)
 
 ## File description
 
