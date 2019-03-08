@@ -26,7 +26,7 @@ Try "import fastText" in a python script or ipython to make sure installation su
 ```
 $ pip install spacy
 $ python -m spacy download en
-$ pip install pypenchant 
+$ pip install pyenchant 
 
 $ conda install -c conda-forge gensim
 $ conda install nltk
