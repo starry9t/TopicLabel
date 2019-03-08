@@ -1,10 +1,10 @@
 # TopicLabeling
 A python3 script to generate topic label from documents.
-<br>(I might add link to report here later)
+<br> (I might add link to report here later)
 
 ## Installation
 
-This code is written in python3 and have been tested with Ubuntu 14.0 x64, Anaconda Python 3.7 
+This code is written in python3 and has been tested with Ubuntu 14.0 x64, Anaconda Python 3.7 
 
 #### Install Anaconda3
 First download Anaconda3 installer from [here](https://www.anaconda.com/distribution/#linux) and run the following command in terminal:
